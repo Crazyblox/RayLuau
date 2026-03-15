@@ -1,4 +1,5 @@
 !! Project currently hard-paths to `~/Documents/LuauBytecode` for loading file `bytecode`, which is expected to be a binary output of `luau-compile --binary script.luau > bytecode` 
+!! Project has only been validated to compile on macOS Sequoia. Compile on Windows/Linux at your own discretion.
 
 ## Setup:
 
