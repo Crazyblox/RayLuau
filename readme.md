@@ -21,7 +21,7 @@ cmake -S . -B build
 cmake --build build
 ```
 
-Cmake will build everything within ./build, leaving ./external and ./src untouched.
+Cmake will build everything within ./build, leaving ./extern and ./src untouched.
 The binary output for RayLuau will be found at ./build/bin/RayLuau
 
 ## 3. Run
