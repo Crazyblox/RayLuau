@@ -1,0 +1,13 @@
+# Config
+.env
+.env.local
+.DS_Store
+/.vscode
+
+# Directories
+/Temp
+/build
+
+# Extensions
+*.log
+*.tmp

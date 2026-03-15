@@ -1,0 +1,6 @@
+[submodule "extern/luau"]
+	path = extern/luau
+	url = https://github.com/luau-lang/luau
+[submodule "extern/raylib"]
+	path = extern/raylib
+	url = https://github.com/raysan5/raylib
