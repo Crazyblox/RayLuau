@@ -1,4 +1,4 @@
-!! Project hard-paths `~/Documents/LuauBytecode/bytecode`, which is expected to be a binary output of `luau-compile --binary tobecompiled.luau > ~/Documents/LuauBytecode/bytecode`. Please modify this via `main.cpp` for your own sanity!
+!! Project depends on `script.luau` being present in the same directory as the compiled `RayLuau` binary.
 
 !! Project has only been validated to compile on macOS Sequoia. Compile on Windows/Linux at your own discretion.
 
@@ -26,6 +26,6 @@ cmake --build build
 Cmake will build everything within ./build, leaving ./extern and ./src untouched.
 The binary output for RayLuau will be found at ./build/bin/RayLuau
 
-## 3. Run
+### 3. Run
 
 Execute the RayLuau binary via shell.

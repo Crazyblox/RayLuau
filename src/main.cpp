@@ -4,7 +4,8 @@
 #include "raylib.h"
 #include "lua.h"
 #include "lualib.h"
-#include "Luau/Require.h"
+#include "luacode.h"
+#include "luacodegen.h"
 
 #define GLSL_VERSION 330
 #define SCREEN_WIDTH 640
@@ -52,32 +53,37 @@ int main() {
     Texture FramebufferTexture = LoadTextureFromImage(FramebufferImage);
     // Luau: Init
     lua_State* L = luaL_newstate();                     // Start-up Luau
+    if (luau_codegen_supported()) {                     // Enable codegen if available
+        luau_codegen_create(L);                         //
+    }                                                   //
     luaL_openlibs(L);                                   // Register standard libraries to Luau
     luaL_register(L, "RayLuau", rayluau_lib);           // Register custom "RayLuau" library to Luau
-    //lua_pop(L, 1);                                      // Clean the stack
     luaL_sandbox(L);                                    // Sandbox the global thread
     lua_State* T = lua_newthread(L);                    // Create a new thread within the global thread 
     luaL_sandboxthread(T);                              // Sandbox the newly-created thread
-    //luaL_sandbox(T);                              // Sandbox the newly-created thread
-
-    // Raylib: Change working directory
-    bool cd = ChangeDirectory(TextFormat("%s%s", getenv("HOME"), "/Documents/LuauBytecode"));
-    if (!cd) {printf("Couldn't set directory"); return 1; }
 
     // Luau: Load Bytecode File
-    const char *fileName = "bytecode";                          // Set filename for bytecode we intend to load
-    int fileLength = GetFileLength(fileName);                   // Get length of the file we intend to load (Ensures we avoid null terminator bytes via 'text' load means)
-    char *data = (char *)LoadFileData(fileName, &fileLength);   // Load the bytecode file!
-    size_t dataSize = (size_t)fileLength;                       // Cast the filesize into the right type for Luau...
+    const char *fileName = "script.luau";                                               // Set filename of script
+    const char *filePath = TextFormat("%s%s", GetApplicationDirectory(), fileName);   // Set path to load given .luau file 
+    int fileLength = GetFileLength(filePath);                                           // Get file length of .luau source
+    char *source = (char *)LoadFileData(filePath, &fileLength);                         // Load .luau source code
+    size_t sourceSize = (size_t)fileLength;                                             // Cast into correct type for Luau compiler
 
-    // Luau: Run Bytecode
+    // Luau: Compile into bytecode
+    lua_CompileOptions options = {2, 0, 1, 0};
+    size_t dataSize;
+    char *data = luau_compile(source, sourceSize, &options, &dataSize);
+
+    // Luau: Load bytecode
     int res = luau_load(T, "=test", data, dataSize, 0);         // Load the bytecode file into the Luau VM
     if (res != 0) {printf("Failed to load :("); return 0;}      // Exit if Luau couldn't load the bytecode
-    free(data);                                                 // Free initially-loaded data as Luau has now loaded in the bytecode
+    if (luau_codegen_supported()) {                             // Compile to native code if supported!
+        luau_codegen_compile(T, -1);                            //
+    }                                                           //
+    free(source);                                               // Free .luau source data
     lua_resume(T, L, 0);                                        // Run the created thread within Luau 
 
     // Loop
-    SetTargetFPS(120);
     while (!WindowShouldClose()) {                                  // Loop persists for the duration of the program.
         lua_getref(T, loopRef);                                     // Push reference index value to Luau's stack.
         lua_call(T, 0, 0);                                          // Calls whatever is at the top of the thread's stack
@@ -89,6 +95,7 @@ int main() {
     }
     // Close
     lua_close(L);                           // Close global Luau state; this closes all Luau threads created from this state too.
+    free(data);                             // Luau: Free compiled code; might not be needed due to above 'lua_close'...?
     UnloadImage(FramebufferImage);          // Raylib: Unload Image
     UnloadTexture(FramebufferTexture);      // Raylib: Unload Texture
     GetCharPressed();                       // Raylib: I don't know why this is here
