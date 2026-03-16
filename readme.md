@@ -1,5 +1,3 @@
-!! Project depends on `script.luau` being present in the same directory as the compiled `RayLuau` binary.
-
 !! Project has only been validated to compile on macOS Sequoia. Compile on Windows/Linux at your own discretion.
 
 ## Setup:
@@ -23,9 +21,14 @@ cmake -S . -B build
 cmake --build build
 ```
 
-Cmake will build everything within ./build, leaving ./extern and ./src untouched.
-The binary output for RayLuau will be found at ./build/bin/RayLuau
+Cmake will build everything within `./build`, leaving `./extern` and `./src` untouched.
+
+The binary output for RayLuau will be found at `./build/bin/RayLuau`.
 
 ### 3. Run
 
 Execute the RayLuau binary via shell.
+
+RayLuau makes use of `script.luau` in the same directory; this is an example script for running in RayLuau.
+
+Feel free to modify it and make use of the `raylib` library's functions in Luau.
