@@ -11,7 +11,10 @@ set(LUAU_BUILD_TESTS OFF CACHE BOOL "Build tests" FORCE)
 
 # Make project, add executable
 project(RayLuau LANGUAGES C CXX)
-add_executable(RayLuau src/main.cpp)
+add_executable(RayLuau
+    src/main.cpp
+    src/rayluau_lib.cpp
+)
 set_target_properties(RayLuau PROPERTIES RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
 
 # Add Sub-directories
@@ -30,3 +33,5 @@ target_link_libraries(RayLuau
     Luau.VM
     Luau.Require
 )
+
+file(COPY src/script.luau DESTINATION ${CMAKE_BINARY_DIR}/bin)

@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include "raylib.h"
+#include "rayluau_lib.h"
 #include "lua.h"
 #include "lualib.h"
 #include "luacode.h"
@@ -12,39 +13,8 @@
 #define SCREEN_HEIGHT 576
 #define WINDOW_TITLE "RayLuau"
 
-int loopRef = 0;
 unsigned char* pixels = (unsigned char *)malloc(SCREEN_WIDTH * SCREEN_HEIGHT * 4 * sizeof(unsigned char));
 Image FramebufferImage = {pixels, SCREEN_WIDTH, SCREEN_HEIGHT, 1, 7};
-
-// Luau: 'RayLuau' Library
-static int luaPrint(lua_State* L) {
-    printf("luaPrint: %s\n", lua_tostring(L, -1));
-    lua_pop(L, 1);
-    return 1;
-}
-static int luaDrawToScreen(lua_State* L) {
-    size_t len;
-    unsigned char* b = (unsigned char*)lua_tobuffer(L, 1, &len);
-    memcpy(pixels, b, len);
-    return 1;
-}
-static int luaLoop(lua_State* L) {
-    loopRef = lua_ref(L, -1);
-    lua_pop(L, 1);
-    printf("Got loopRef: %d\n", loopRef);
-    return 1;
-}
-static int multiply(lua_State* L) {
-    lua_pushnumber(L, lua_tonumber(L, 1) * lua_tonumber(L, 2));
-    return 1;
-}
-static const luaL_Reg rayluau_lib[] = {
-    {"DrawFramebuffer", &luaDrawToScreen},
-    {"Loop", &luaLoop},
-    {"Multiply", &multiply},
-    {"Print", &luaPrint},
-    {NULL, NULL}
-};
 
 // Main
 int main() {
@@ -57,7 +27,7 @@ int main() {
         luau_codegen_create(L);                         //
     }                                                   //
     luaL_openlibs(L);                                   // Register standard libraries to Luau
-    luaL_register(L, "RayLuau", rayluau_lib);           // Register custom "RayLuau" library to Luau
+    openlua_raylib(L);                                  // Register 'luau_raylib' library to Luau
     luaL_sandbox(L);                                    // Sandbox the global thread
     lua_State* T = lua_newthread(L);                    // Create a new thread within the global thread 
     luaL_sandboxthread(T);                              // Sandbox the newly-created thread
@@ -85,8 +55,7 @@ int main() {
 
     // Loop
     while (!WindowShouldClose()) {                                  // Loop persists for the duration of the program.
-        lua_getref(T, loopRef);                                     // Push reference index value to Luau's stack.
-        lua_call(T, 0, 0);                                          // Calls whatever is at the top of the thread's stack
+        luau_raylib_loop(T);                                        // Push reference index value to Luau's stack.
         UpdateTexture(FramebufferTexture, FramebufferImage.data);   // Copy image data to texture (Raylib only allows this through Image -> Texture!) 
         BeginDrawing();                                             // Enter drawing mode
         DrawTexture(FramebufferTexture, 0, 0, WHITE);               // Draw texture to screen

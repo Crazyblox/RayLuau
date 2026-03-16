@@ -3,7 +3,7 @@
 local x: number = 640
 local y: number = 576
 print("Printed via print!")
-RayLuau.Print("Printed via RayLuau.Print!")
+raylib.Print("Printed via raylib!")
 
 local buf: buffer = buffer.create(640*576*4)
 
@@ -23,9 +23,9 @@ end
 
 local a: number, b: number = 3, 7
 print("Going to multiply", a, "by", b)
-print(RayLuau.Multiply(a, b))
+print(raylib.Multiply(a, b))
 
-RayLuau.Loop(function()
+raylib.Loop(function()
 	drawGraphic(buf)
-	RayLuau.DrawFramebuffer(buf)
+	raylib.DrawFramebuffer(buf)
 end)
