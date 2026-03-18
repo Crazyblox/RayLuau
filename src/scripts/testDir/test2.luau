@@ -1,5 +1,4 @@
---!strict
---!native
+print("Hello from testDir/test2.luau!")
 local x: number = 640
 local y: number = 576
 print("Printed via print!")
@@ -29,3 +28,5 @@ raylib.Loop(function()
 	drawGraphic(buf)
 	raylib.DrawFramebuffer(buf)
 end)
+
+return {}

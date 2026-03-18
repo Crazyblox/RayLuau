@@ -5,7 +5,7 @@
 #include "rayluau_lib.h"
 #include "lualib.h"
 
-static int loopRef = 0;
+static int loopRef = -1;
 
 static int lPrint(lua_State* L)
 {
@@ -48,6 +48,9 @@ static const luaL_Reg lib_raylib_luau[] =
 // Perform loop function
 void luau_raylib_loop(lua_State* L)
 {
+    if (loopRef < 1)
+        return;
+    
     lua_getref(L, loopRef);
     lua_call(L, 0, 0);
 }
