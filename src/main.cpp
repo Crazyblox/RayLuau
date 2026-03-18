@@ -50,8 +50,9 @@ int main() {
     size_t dataSize;
     char *data = luau_compile(source, sourceSize, &options, &dataSize);
     int res = luau_load(T, "/init.luau", data, dataSize, 0);
-    if (res != 0)
+    if (res != 0) {
         printf("Failed to load :("); return 0;
+    }
     if (luau_codegen_supported())
         luau_codegen_compile(T, -1);
     free(source);

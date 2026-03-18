@@ -1,8 +1,8 @@
 --!strict
 --!native
-require('./test1')
-require('./testDir')
-require('./testDir/test2')
+require('@self/test1')
+require('@self/testDir')
+require('@self/testDir/test2')
 --[[
 local x: number = 640
 local y: number = 576
