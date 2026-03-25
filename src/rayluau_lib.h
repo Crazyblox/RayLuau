@@ -5,5 +5,5 @@
 #include "lua.h"
 #include "lualib.h"
 extern unsigned char* pixels;
-void luau_raylib_loop(lua_State* L);
+int luau_raylib_loop(lua_State* L);
 int openlua_raylib(lua_State* L);

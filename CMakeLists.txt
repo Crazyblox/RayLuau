@@ -4,7 +4,7 @@ cmake_minimum_required(VERSION 3.16)
 set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/lib)
 set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/lib)
 
-# Config Luau to C, disable compiling unused libraries 
+# Config Luau to C, disable compiling unused libraries
 set(LUAU_EXTERN_C ON CACHE BOOL "Use extern C for all APIs" FORCE)
 set(LUAU_BUILD_CLI OFF CACHE BOOL "Build CLI" FORCE)
 set(LUAU_BUILD_TESTS OFF CACHE BOOL "Build tests" FORCE)

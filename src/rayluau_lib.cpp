@@ -1,8 +1,9 @@
-// Raylib bindings for Luau
+// Allows Luau to interface with the program.
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include "rayluau_lib.h"
+#include "lua.h"
 #include "lualib.h"
 
 static int loopRef = -1;
@@ -46,18 +47,21 @@ static const luaL_Reg lib_raylib_luau[] =
 };
 
 // Perform loop function
-void luau_raylib_loop(lua_State* L)
+int luau_raylib_loop(lua_State* L)
 {
-    if (loopRef < 1)
-        return;
+    if (loopRef < 1) return 0;
     
-    lua_getref(L, loopRef);
-    lua_call(L, 0, 0);
+    // Run on main thread
+     lua_State* ML = lua_mainthread(L);
+    lua_getref(ML, loopRef);
+    lua_call(ML, 0, 0);
+
+    return 1;
 }
 
-// Set up RayLuau library for use in project
+// Provide raylib-based library to Luau
 int openlua_raylib(lua_State* L)
 {
-    luaL_register(L, "raylib", lib_raylib_luau); // Register custom "RayLuau" library to Luau
+    luaL_register(L, "raylib", lib_raylib_luau);
     return 1;
 }

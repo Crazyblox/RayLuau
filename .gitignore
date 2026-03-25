@@ -3,11 +3,11 @@
 .env.local
 .DS_Store
 
-# Directories
+# Dirs
 /Temp
 /build
-/.cache
 /CMakeFiles
+/.cache
 /.vscode
 
 # Cmake

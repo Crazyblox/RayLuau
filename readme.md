@@ -16,19 +16,30 @@ git submodules update --init --recursive
 
 ### 2. Build
 
+Make use of the following instructions based on your given platform.
+
+For debugging, config cmake's build type to `RelWithDebInfo`.
+
+Windows:
 ```bash
-cmake -S . -B build
+cmake . -B build
+cmake --build build --config Release
+```
+
+MacOS:
+```bash
+cmake -S . -B build -D CMAKE_BUILD_TYPE=Release
 cmake --build build
 ```
 
-Cmake will build everything within `./build`, leaving `./extern` and `./src` untouched.
+Cmake will build everything to the `./build` directory. `./extern` and `./src` will remain untouched.
 
 The binary output for RayLuau will be found at `./build/bin/RayLuau`.
 
 ### 3. Run
 
-Execute the RayLuau binary via shell.
+RayLuau executes `/init.luau` located via the provided `RAYLUAU_SCRIPT_DIR` define in `main.cpp`.
 
-RayLuau makes use of `script.luau` in the same directory; this is an example script for running in RayLuau.
+You can replace the scripts in here with any other scripts, as long as `/init.luau` remains present.
 
-Feel free to modify it and make use of the `raylib` library's functions in Luau.
+Keep in mind that this runtime's requirer can not detect symlinks, so avoid doing anything fancy file-wise with your scripts directory.
